@@ -2,6 +2,8 @@ package com.macro.mall.portal.config;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,7 +30,10 @@ public class JacksonConfig {
         // Include.NON_EMPTY 属性为 空（""） 或者为 NULL 都不序列化，则返回的json是没有这个字段的。这样对移动端会更省流量
         // Include.NON_NULL 属性为NULL 不序列化,就是为null的字段不参加序列化
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-
+        SimpleModule module = new SimpleModule();
+        module.addSerializer(Long.class, ToStringSerializer.instance);
+        module.addSerializer(Long.TYPE, ToStringSerializer.instance);
+        objectMapper.registerModule(module);
         // 字段保留，将null值转为""
 //        objectMapper.getSerializerProvider().setNullValueSerializer(new JsonSerializer<Object>()
 //        {
